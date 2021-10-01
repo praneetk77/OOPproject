@@ -11,7 +11,7 @@ public class User {
 	}
 	
 	public void showBalance() {
-		System.out.println(this.account.balance);
+		this.account.showBalance();
 	}
 	
 	public void deposit(int x) {

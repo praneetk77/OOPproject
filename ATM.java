@@ -12,49 +12,50 @@ public class ATM {
 	}
 	
 	public int enterPin() {
-		System.out.println("Please enter your pin :-");
-		System.out.println();
+		System.out.println("\nPlease enter your pin :-\n");
 		return sc.nextInt();
 	}
 	
-	public void selectTransaction(int choice) {
+	public boolean selectTransaction(int choice) {
 		if(choice==1) {
 			this.user.showBalance();
 		}else if(choice==2) {
 			int amount = enterAmount();
 			this.user.deposit(amount);
-			System.out.println("success");
-		}else {
+		}else if(choice==3) {
 			int amount = enterAmount();
 			this.user.withdraw(amount);
-			System.out.println("success");
+		}else if(choice==4) {
+			this.displayExitMessage();
+			return false;
 		}
+		return true;
 	}
 	
 	public int enterAmount() {
-		System.out.println("Please enter your amount :-");
-		System.out.println();
+		System.out.println("\nPlease enter your amount :-\n");
 		return sc.nextInt();
 	}
 	
 	public void displayWelcomeMessage() {
-		System.out.println("Hello. Welcome to OOP Bank.");
+		
+		System.out.println("\nHello. Welcome to OOP Bank.");
 	}
 	
 	public void displayChoiceMessage() {
-		System.out.println("Enter 1 to show balance, 2 to deposit and 3 to withdraw.");
+		System.out.println("\nEnter :-\n1 --> To show balance.\n2 --> To deposit money.\n3 --> To withdraw money.\n4 --> To exit.\n");
 	}
 	
 	public void displayPinErrorMessage() {
-		System.out.println("You have entered the wrong pin. Please try again later ");
+		System.out.println("\nYou have entered the wrong pin. Please try again later ");
 	}
 	
 	public void displayErrorMessage() {
-		System.out.println("Error. Please try again later.");
+		System.out.println("\nError. Please try again later.");
 	}
 	
 	public void displayExitMessage() {
-		System.out.println("Thank you. See you soon.");
+		System.out.println("\nThank you. See you soon.");
 	}
 	
 	public static void main(String[] args) {
@@ -64,14 +65,20 @@ public class ATM {
 		
 		ATM atm = new ATM(user1);
 		atm.displayWelcomeMessage();
+		
 		int enteredPin = atm.enterPin();
 		if(atm.user.card.checkPin(enteredPin)) {
-			atm.displayChoiceMessage();
-			int choice = sc.nextInt();
-			atm.selectTransaction(choice);
+			
+			while(true) {
+				atm.displayChoiceMessage();
+				int choice = sc.nextInt();
+				if(!atm.selectTransaction(choice)) break;
+			}
+			
+			
+			
 		}else {
 			atm.displayPinErrorMessage();
-			atm.displayExitMessage();
 		}
 		
 	}
