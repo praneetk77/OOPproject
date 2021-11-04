@@ -7,20 +7,6 @@ class jatin_ATM{
 	this.user=user;
 	}
 }
-class jatin_Acc{
-int accnumber;
-int balance;
-boolean checkacc(int acc) {
-	if(acc==this.accnumber) {
-		return true;
-	}else {
-		return false;
-	}
-}
-void showBalance() {
-	System.out.println(this.balance);
-}
-}
 class JatinCard{
 	int pin;
 	JatinCard(int pin){
