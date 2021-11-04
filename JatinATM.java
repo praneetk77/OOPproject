@@ -2,8 +2,10 @@ package OOPproject;
 
 import java.util.*;
 class jatin_ATM{
-	User u;
-	
+	private User user;
+	public void jatin_ATM(User user){
+	this.user=user;
+	}
 }
 class jatin_Acc{
 int accnumber;
