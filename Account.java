@@ -26,7 +26,7 @@ public class Account {
 		}
 	}
 	
-	public boolean isDeductionAllowed(int amount) {
+	private boolean isDeductionAllowed(int amount) {
 		return(amount<this.balance); 
 	}
 
