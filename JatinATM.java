@@ -2,22 +2,10 @@ package OOPproject;
 
 import java.util.*;
 class jatin_ATM{
-	User u;
-	
-}
-class jatin_Acc{
-int accnumber;
-int balance;
-boolean checkacc(int acc) {
-	if(acc==this.accnumber) {
-		return true;
-	}else {
-		return false;
+	private User user;
+	public void jatin_ATM(User user){
+	this.user=user;
 	}
-}
-void showBalance() {
-	System.out.println(this.balance);
-}
 }
 class JatinCard{
 	int pin;
