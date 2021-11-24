@@ -27,5 +27,13 @@ public class User {
 	public void withdraw(int x) {
 		this.account.decrease(x);
 	}
+	
+	public int getPin() {
+		return this.card.pin;
+	}
+	
+	public boolean checkPin(int pin) {
+		return this.getPin()==pin;
+	}
 
 }

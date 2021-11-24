@@ -142,14 +142,14 @@ public class ATM {
 					continue;
 				}
 			}
-			if(users.get(id-1).card.pin==p) break;
+			if(users.get(id-1).checkPin(p)) break;
 			else this.displayPinErrorMessage();
 		}
 		return id;
 	}
 	
 	public boolean checkId(int id, int pin) {
-		return users.get(id-1).card.pin == pin;
+		return users.get(id-1).checkPin(pin);
 	}
 	
 	public void deposit(int id, int amount) {
