@@ -14,20 +14,24 @@ public class Account {
 	
 	public void increase(int amount) {
 		this.balance += amount;
-		System.out.println("\nRs." + amount + " has been credited to your account. Your current balance is Rs." + this.balance + ".\n");
+		System.out.println("\nTransaction succesfull.\nRs." + amount + " has been credited to your account.\n");
 	}
 	
 	public void decrease(int amount) {
 		if(this.isDeductionAllowed(amount)) {
-			this.balance -= amount;
-			System.out.println("\nRs." + amount + " has been deducted from your account. Your current balance is Rs." + this.balance + ".\n");
+			if(amount%100!=0) {
+				System.out.println("Please enter an amount in the denomination of 100.");
+			}else {
+				this.balance -= amount;
+				System.out.println("\nTransaction succesfull.\nRs." + amount + " has been deducted from your account.\n");
+			}
 		}else {
-			System.out.println("Your balance is not enough to process this transaction. Please deposit Rs." + (amount-this.balance) + " first or reduce the required amount.\n");
+			System.out.println("Your balance is not enough to process this transaction.\n");
 		}
 	}
 	
 	private boolean isDeductionAllowed(int amount) {
-		return(amount<this.balance); 
+		return(amount<=this.balance); 
 	}
 
 }

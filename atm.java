@@ -15,8 +15,11 @@ import java.util.Scanner;
 
 
 public class ATM {
-	Scanner sc = new Scanner(System.in);
+	Scanner scanner = new Scanner(System.in);
 	List<User> users;
+	
+	final String databaseExtension = "C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt";
+	final String tempExtension = "C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\temp.txt";
 	
 	ATM(){
 		users = new ArrayList<>();
@@ -27,7 +30,7 @@ public class ATM {
 		Scanner in = null;
 		users.clear();
 		try {
-			in = new Scanner(new FileInputStream("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt"));
+			in = new Scanner(new FileInputStream(databaseExtension));
 			while(in.hasNext() && in.hasNextLine()) {
 				int id = in.nextInt();
 				int pin = in.nextInt();
@@ -41,45 +44,13 @@ public class ATM {
 		}
 	}
 	
-	private User getUser(int id) {
-		return users.get(id-1);
-	}
-	
-	public int enterPin() {
-		System.out.println("\nPlease enter your pin :-\n");
-		return sc.nextInt();
-	}
-	
-	public boolean selectTransaction(int choice, int id) {
-		User user = getUser(id);
-		if(choice==1) {
-			user.showBalance();
-		}else if(choice==2) {
-			int amount = enterAmount();
-			user.deposit(amount);
-		}else if(choice==3) {
-			int amount = enterAmount();
-			user.withdraw(amount);
-		}else if(choice==4) {
-			displayExitMessage();
-			return false;
-		}
-		users.set(id-1, user);
-		return true;
-	}
-	
-	public int enterAmount() {
-		System.out.println("\nPlease enter your amount :-\n");
-		return sc.nextInt();
-	}
-	
 	public void displayWelcomeMessage() {
 		System.out.println("\nHello. Welcome to OOP Bank.");
 	}
 	
 	public int displayLoginChoiceMessage() {
 		System.out.println("\nEnter :-\n1 --> For NEW user.\n2 --> For EXISTING user.");
-		int n = sc.nextInt();
+		int n = scanner.nextInt();
 		return n;
 	}
 	
@@ -87,35 +58,20 @@ public class ATM {
 		int p = 0;
 		while(true) {
 			System.out.println("\nEnter your chosen pin (number of 4 digits) :-");
-			String pin = sc.next();
+			String pin = scanner.next();
 			if(pin.length()!=4) {
-				System.out.println("\nPlease enter a number of 4 digits as your number.");
+				this.displayPinFormatErrorMessage();
 			}else {
 				try {
 					p = Integer.parseInt(pin);
 					break;
 				}catch(Exception e) {
-					System.out.println("\nPlease enter a number of 4 digits as your number.");
+					this.displayPinFormatErrorMessage();
 					continue;
 				}
 			}
 		}
 		int id = addNewUser(p);
-		return id;
-	}
-	
-	private int addNewUser(int pin) {
-		int id = users.size()+1;
-		int balance = 0;
-		PrintWriter out = null;
-		users.add(new User(id, pin, balance));
-		try {
-			out = new PrintWriter(new FileOutputStream("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt", true));
-			out.println(id + " " + pin + " " + balance);
-			out.close();
-		} catch(IOException e) {
-			System.out.println(e.getMessage());
-		}
 		return id;
 	}
 	
@@ -126,49 +82,90 @@ public class ATM {
 		while(true) {
 			System.out.println("\nEnter your id :-");
 			try {
-				id = Integer.parseInt(sc.next());
+				id = Integer.parseInt(scanner.next());
 			}catch(Exception e) {
 				System.out.println("\nPlease enter a valid ID.");
 			}
 			System.out.println("\nEnter your pin :-");
-			String pin = sc.next();
+			String pin = scanner.next();
 			if(pin.length()!=4) {
-				System.out.println("\nPlease enter a number of 4 digits as your number.");
+				this.displayPinFormatErrorMessage();
 			}else {
 				try {
 					p = Integer.parseInt(pin);
 				}catch(Exception e) {
-					System.out.println("\nPlease enter a number of 4 digits as your number.");
+					this.displayPinFormatErrorMessage();
 					continue;
 				}
 			}
-			if(users.get(id-1).checkPin(p)) break;
+			if(getUser(id).checkPin(p)) break;
 			else this.displayPinErrorMessage();
 		}
 		return id;
 	}
 	
-	public boolean checkId(int id, int pin) {
-		return users.get(id-1).checkPin(pin);
+	private int addNewUser(int pin) {
+		int id = users.size()+1;
+		int balance = 0;
+		PrintWriter out = null;
+		users.add(new User(id, pin, balance));
+		try {
+			out = new PrintWriter(new FileOutputStream(databaseExtension, true));
+			out.println(id + " " + pin + " " + balance);
+			out.close();
+		} catch(IOException e) {
+			System.out.println(e.getMessage());
+		}
+		return id;
+	}
+	
+	public int displayChoiceMessage(int id) {
+		System.out.println("\nWelcome user number " + id + ".\nEnter :-\n1 --> To show balance.\n2 --> To deposit money.\n3 --> To withdraw money.\n4 --> To exit.\n");
+		return scanner.nextInt();
+	}
+	
+	public void displayBalance(int id) {
+		getUser(id).account.showBalance();
 	}
 	
 	public void deposit(int id, int amount) {
-		users.get(id-1).account.increase(amount);
-		updateDatabase(id,users.get(id-1).account.balance);
+		getUser(id).deposit(amount);
+		updateDatabase(id,getUser(id).account.balance);
 	}
 	
 	public void withdraw(int id, int amount) {
-		users.get(id-1).account.decrease(amount);
-		updateDatabase(id,users.get(id-1).account.balance);
+		getUser(id).withdraw(amount);
+		updateDatabase(id,getUser(id).account.balance);
 	}
+	
+	public void displayExitMessage() {
+		System.out.println("\nThank you. See you soon.");
+	}
+	
+	private User getUser(int id) {
+		return users.get(id-1);
+	}
+	
+	public int enterAmount() {
+		System.out.println("\nPlease enter your amount :-\n");
+		return scanner.nextInt();
+	}
+	
+	private void displayPinErrorMessage() {
+		System.out.println("\nEntered pin is incorrect.");		
+	}
+	
+	private void displayPinFormatErrorMessage() {
+		System.out.println("\nPlease enter a number of 4 digits as your number.");
+	}	
 	
 	private void updateDatabase(int id, int amount) {
 		
 		PrintWriter out = null;
 		Scanner in = null;
 		try {
-			File file = new File("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt");
-			File temp = new File("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\temp.txt");
+			File file = new File(databaseExtension);
+			File temp = new File(tempExtension);
 			in = new Scanner(file);
 			out = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
 			String x = "", y = "", z = "";
@@ -182,28 +179,20 @@ public class ATM {
 				}else {
 					out.println(x + " " + y + " " + z);
 				}
-//				String line = in.nextLine();
-//			    String[] user = line.split(" ");
-//			    if(Integer.parseInt(user[0])==id) {
-//			    	line = user[0] +" " +  user[1] +" "+ amount;
-//			    }
-//			    out.println(line);
 			}
 			in.close();
 			out.flush();
 			out.close();
 			copyFile();
-//			file.delete();
-//			System.out.println(temp.renameTo(file));
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	public void copyFile() {
+	private void copyFile() {
 		try {
-			FileReader fin = new FileReader("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\temp.txt");  
-			FileWriter fout = new FileWriter("C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt");  
+			FileReader fin = new FileReader(tempExtension);  
+			FileWriter fout = new FileWriter(databaseExtension);  
 			int c;  
 			while ((c = fin.read()) != -1) {  
 			 fout.write(c);  
@@ -214,52 +203,6 @@ public class ATM {
 			System.out.println(e.getMessage());
 		}
 		
-	}
-	
-	public int displayChoiceMessage() {
-		System.out.println("\nEnter :-\n1 --> To show balance.\n2 --> To deposit money.\n3 --> To withdraw money.\n4 --> To exit.\n");
-		return sc.nextInt();
-	}
-	
-	public void displayPinErrorMessage() {
-		System.out.println("\nEntered pin is incorrect.");
-	}
-	
-	public void displayBalance(int id) {
-		users.get(id-1).account.showBalance();
-	}
-	
-	public void displayErrorMessage() {
-		System.out.println("\nError. Please try again later.");
-	}
-	
-	public void displayExitMessage() {
-		System.out.println("\nThank you. See you soon.");
-	}
-	
-	public static void main(String[] args) {
-//		Card card1 = new Card(1234);
-//		Account account1 = new Account(5000);
-//		User user1 = new User(card1, account1);
-//		
-//		ATM atm = new ATM(user1);
-//		atm.displayWelcomeMessage();
-//		
-//		int enteredPin = atm.enterPin();
-//		if(atm.user.card.checkPin(enteredPin)) {
-//			
-//			while(true) {
-//				atm.displayChoiceMessage();
-//				int choice = sc.nextInt();
-//				if(!atm.selectTransaction(choice)) break;
-//			}
-//			
-//			
-//			
-//		}else {
-//			atm.displayPinErrorMessage();
-//		}
-		
-	}
+	}	
 
 }

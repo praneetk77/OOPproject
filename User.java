@@ -33,7 +33,7 @@ public class User {
 	}
 	
 	public boolean checkPin(int pin) {
-		return this.getPin()==pin;
+		return this.card.checkPin(pin);
 	}
 
 }

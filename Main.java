@@ -6,11 +6,6 @@ public class Main {
 				
 		ATM atm = new ATM();
 		
-		
-		for(User u : atm.users) {
-			System.out.println(u.id + " " + u.card.pin + " " + u.account.balance);
-		}
-		
 		while(true) {
 			atm.displayWelcomeMessage();
 			int loginChoice = atm.displayLoginChoiceMessage();
@@ -24,7 +19,7 @@ public class Main {
 			}
 			
 			while(true) {
-				int choice = atm.displayChoiceMessage();
+				int choice = atm.displayChoiceMessage(id);
 				if(choice==1) {
 					atm.displayBalance(id);
 				}else if(choice==2) {
