@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class ATM {
 	Scanner scanner = new Scanner(System.in);
 	List<User> users;
-	
+	int machineBalance = 10000;
 	final String databaseExtension = "C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\database.txt";
 	final String tempExtension = "C:\\Users\\prane\\eclipse-workspace\\Java\\src\\OOPproject\\temp.txt";
 	
@@ -134,8 +134,14 @@ public class ATM {
 	}
 	
 	public void withdraw(int id, int amount) {
-		getUser(id).withdraw(amount);
-		updateDatabase(id,getUser(id).account.balance);
+		if(machineBalance>=amount) {
+			getUser(id).withdraw(amount);
+			updateDatabase(id,getUser(id).account.balance);
+		}else {
+			machineBalance += 10000;
+			System.out.println("Machine balance insufficient. Please try again");
+		}
+		
 	}
 	
 	public void displayExitMessage() {
